@@ -25,8 +25,8 @@ bool loopServer() {
       if(c == '\n' && newLine) {
         if(method == POST) {
           readParams();
-          client.println("HTTP/1.1 302 Found");
-          client.println("Location: /");
+          client.println(F("HTTP/1.1 302 Found"));
+          client.println(F("Location: /"));
         } else if(method == GET) {
           printPage(); 
         }  
@@ -51,56 +51,57 @@ bool loopServer() {
 
 void printPage() {
   // send a standard http response header
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println("Connnection: close");
+  client.println(F("HTTP/1.1 200 OK"));
+  client.println(F("Content-Type: text/html"));
+  client.println(F("Connnection: close"));
   client.println();
   
-  client.println("<!DOCTYPE HTML><html>");
-  client.println("<head><style>");
-  client.println("body { font-family: sans-serif; font-size: 13px; padding: 0 15px; }");
-  client.println("fieldset { border: solid 1px #ccc; border-radius: 5px; padding: 10px; margin: 15px 0; }");
-  client.println("</style></head>");
-  client.println("<body><form method=\"post\">");
+  client.println(F("<!DOCTYPE HTML><html>"));
+  client.println(F("<head><style>"));
+  client.println(F("body { font-family: sans-serif; font-size: 13px; padding: 0 15px; }"));
+  client.println(F("fieldset { border: solid 1px #ccc; border-radius: 5px; padding: 10px; margin: 15px 0; }"));
+  client.println(F("</style></head>"));
+  client.println(F("<body><form method=\"post\">"));
   
   time_t t = now();
   
   for(int i = 0; i < 5; i++) {
-    client.println("<fieldset>");
+    client.println(F("<fieldset>"));
     
-    client.print("<legend>");
+    client.print(F("<legend>"));
     if(i + dowMonday < weekday(t))
-      client.print("Next ");
+      client.print(F("Next "));
+     
     client.print(dayStr(i + dowMonday));
-    client.println("</legend>");
+    client.println(F("</legend>"));
     
-    client.print("<select name=\"proposition[]\">");
+    client.print(F("<select name=\"proposition[]\">"));
     printOption("(none)", "", propositionOnDay[i] == '\0');
     printOption("in", "in", strncmp(propositionOnDay[i], "in", 2) == 0);
     printOption("at", "at", strncmp(propositionOnDay[i], "at", 2) == 0);
     printOption("on", "on", strncmp(propositionOnDay[i], "on", 2) == 0);
-    client.println("</select>");
+    client.println(F("</select>"));
     
-    client.print("<input name=\"location[]\" maxlength=\"20\" value=\"");
+    client.print(F("<input name=\"location[]\" maxlength=\"20\" value=\""));
     client.print(locationOnDay[i]);
-    client.print("\" tabindex=\"");
+    client.print(F("\" tabindex=\""));
     client.print(i + 1);
-    client.println("\">");
+    client.println(F("\">"));
     
-    client.print("<input name=\"time[]\" maxlength=\"5\" value=\"");
+    client.print(F("<input name=\"time[]\" maxlength=\"5\" value=\""));
     client.print(startOfDayInMinutes[i] / 60);
-    client.print(":");
+    client.print(F(":"));
     if(startOfDayInMinutes[i] % 60 < 9)
-      client.print("0");
+      client.print(F("0"));
     client.print(startOfDayInMinutes[i] % 60);
-    client.println("\">");
+    client.println(F("\">"));
     
-    client.println("</fieldset>");
+    client.println(F("</fieldset>"));
   }
-  client.println("<input type=\"submit\" value=\"Save\"></form>");
+  client.println(F("<input type=\"submit\" value=\"Save\"></form>"));
   
   // Print time
-  client.print("<p>The current date/time is ");
+  client.print(F("<p>The current date/time is "));
   client.print(dayStr(weekday(t)));
   client.print(" ");
   client.print(monthShortStr(month(t)));
@@ -118,23 +119,22 @@ void printPage() {
   if(second(t) < 10)
     client.print("0");
   client.print(second(t));
-  client.print(isAM() ? "AM" : "PM");
-  client.println("</p>");
+  client.print(isAM() ? F("AM") : F("PM"));
+  client.println(F("</p>"));
   
-  client.println("</body></html>");
+  client.println(F("</body></html>"));
 }
 
 void printOption(const char* name, const char* value, bool selected) {
-  client.print("<option value=\"");
+  client.print(F("<option value=\""));
   client.print(value);
-  client.print("\"");
+  client.print(F("\""));
   if(selected)
-    client.print(" selected=\"selected\"");
-  client.print(">");
+    client.print(F(" selected=\"selected\""));
+  client.print(F(">"));
   client.print(name);
-  client.print("</option>");
+  client.print(F("</option>"));
 }
-  
 
 void readParams() {
   
