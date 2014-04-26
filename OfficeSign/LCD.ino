@@ -1,4 +1,7 @@
-bool dayStarted[5] = {false, false, false, false, false};
+void setupLCD() { 
+  lcd.setMCPType(LTI_TYPE_MCP23008); 
+  lcd.begin(20, 4);
+}
 
 void loopLCD() {
   
